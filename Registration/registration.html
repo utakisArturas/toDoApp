@@ -10,7 +10,7 @@
 </head>
 <body>
     <div id="container">
-        <form method="POST">
+        <form>
             <h2>Registration</h2>
             <label for="firstName">First name :</label>
             <input type="text" id="nameInput">
@@ -18,9 +18,9 @@
             <input type="text" id="lastNameInput">
             <label for="email">Email :</label>
             <input type="email" id="email">
-            <button type="submit" id="submitBtn">REGISTER</button>
+            <button type="button" id="submitBtn" onclick="register()">REGISTER</button>
         </form>
     </div>
 </body>
-<script src="/registration.js"></script>
+<script src="registration.js"></script>
 </html>
