@@ -23,8 +23,7 @@ function register(){
     .then(function(result){
         if (result.ok === true){
             alert("User created.");
-            // redirect to logged in view
-            // window.location.href = "";
+            window.location.href = "/Login/login.html";
         }
         else{
             clearInputs();
