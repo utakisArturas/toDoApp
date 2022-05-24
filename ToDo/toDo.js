@@ -3,7 +3,7 @@ let popCloseButton = document.querySelector('#popupExit');
 let viewTaskButton = document.querySelector('#viewTask');
 let saveTaskToDatabase = document.querySelector('#popupSubmit')
 let wrapper = document.querySelector('#wrapper');
-
+const loggedInUserEmail = sessionStorage.getItem("loggedInUserEmail");
 
 const taskGetUrl = 'https://testapi.io/api/wehevov449/resource/toDoApp';
 const taskPostUrl = 'https://testapi.io/api/wehevov449/resource/toDoApp';
@@ -54,13 +54,18 @@ saveTaskToDatabase.addEventListener('click',()=>{
             body: JSON.stringify({
             type : document.querySelector('#type').value,
             content : document.querySelector('#content').value,
-            owner : sessionStorage.getItem("loggedInUserEmail"),
+            owner : loggedInUserEmail,
             endDate : document.querySelector('#endDate').value,
             status : 'false'
             })
             
         })
 })
+
+function logout(){
+    sessionStorage.removeItem("loggedInUserEmail");
+    window.location.href = "/index.html"
+}
 
 function isCurrentUserOwner(task){
     return (task.owner === sessionStorage.getItem("loggedInUserEmail"));
