@@ -14,7 +14,7 @@ async function login(){
                 alert("Database error, multiple users found!");
             } else {
                 window.sessionStorage.setItem("loggedInUserEmail", loggedInUser[0].email);
-                window.location.href("/ToDo/ToDo.html");
+                window.location.href = "/ToDo/ToDo.html";
             }
         })
 }

@@ -23,7 +23,8 @@ viewTaskButton.addEventListener('click',()=>{
         return res.json()
     })
     .then(data =>{
-        data.data.forEach(element => {
+        let loggedInUserTasks = data.data.filter(isCurrentUserOwner);
+        loggedInUserTasks.forEach(element => {
         let listItem = document.querySelector('#listItem');
         let taskOutput = document.querySelector('#taskOutput');
         let li = document.createElement('li');
@@ -53,10 +54,14 @@ saveTaskToDatabase.addEventListener('click',()=>{
             body: JSON.stringify({
             type : document.querySelector('#type').value,
             content : document.querySelector('#content').value,
-            owner : 'TBD',
+            owner : sessionStorage.getItem("loggedInUserEmail"),
             endDate : document.querySelector('#endDate').value,
             status : 'false'
             })
             
         })
 })
+
+function isCurrentUserOwner(task){
+    return (task.owner === sessionStorage.getItem("loggedInUserEmail"));
+}
