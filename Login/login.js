@@ -1,6 +1,10 @@
 const firstNameInput = document.getElementById("nameInput");
 const lastNameInput = document.getElementById("lastNameInput");
 
+if (sessionStorage.getItem("loggedInUserEmail") != null){
+    window.location.href = "/ToDo/ToDo.html";
+}
+
 async function login(){
     fetch("https://testapi.io/api/wehevov449/resource/toDoAppUsers")
         .then((response) => {return response.json()})

@@ -2,6 +2,10 @@ const emailInput = document.getElementById("email");
 const firstNameInput = document.getElementById("nameInput");
 const lastNameInput = document.getElementById("lastNameInput");
 
+if (sessionStorage.getItem("loggedInUserEmail") != null){
+    window.location.href = "/ToDo/ToDo.html";
+}
+
 function clearInputs(){
     emailInput.value = "";
     firstNameInput.value = "";
