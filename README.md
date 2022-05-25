@@ -3,4 +3,5 @@
 ## Functionality to implement
 - [x] Basic form input.
 - [ ] Form input validation.
-- [ ] Login with password.
+- [ ] Fix "Done" button to update database record.
+- [ ] Adjust main page button spacing.
