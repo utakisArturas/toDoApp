@@ -1,6 +1,6 @@
 # toDoApp
 
-## Functionality to implement
+## Development to-do
 - [x] Basic form input.
 - [ ] Form input validation.
 - [ ] Fix "Done" button to update database record.
