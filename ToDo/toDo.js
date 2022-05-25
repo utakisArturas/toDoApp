@@ -8,7 +8,22 @@ const loggedInUserEmail = sessionStorage.getItem("loggedInUserEmail");
 
 const taskGetUrl = 'https://testapi.io/api/wehevov449/resource/toDoApp';
 const taskPostUrl = 'https://testapi.io/api/wehevov449/resource/toDoApp';
+const usersGetUrl = 'https://testapi.io/api/wehevov449/resource/toDoAppUsers'
 
+displayUserName();
+
+function displayUserName(){
+    fetch(usersGetUrl)
+    .then(res => {return res.json()})
+    .then(data => {
+        let loggedInUser = data.data.filter(isLoggedInUser)[0];
+        document.getElementById("helloText").innerText = `Hello ${loggedInUser.firstName}`;
+    });
+}
+
+function isLoggedInUser(userToCheck){
+    return (userToCheck.email === loggedInUserEmail);
+}
 
 createTaskButton.addEventListener('click',()=>{
     document.querySelector('#popup').style.display = "flex";
