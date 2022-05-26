@@ -67,7 +67,6 @@ body{
     padding: 0 18px;
     line-height: 50px;
     text-align: left;
-    display: none;
 }
 
 #taskOutput button {
@@ -158,3 +157,41 @@ body{
 #popupContent button:hover{
     background-color: #CCD5AE;
 }
+
+#taskTable{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#taskTable tr {
+    border-bottom: 2px solid #8a7f70;
+}​
+
+#taskTable thead{
+    font-size: 17px;
+}
+
+#taskTable tbody tr:nth-child(odd) {
+    background: #e1d6c9;
+}​
+
+#taskTable td{
+    padding: 1em 1em 0em 1em;
+}
+
+#taskTable td:nth-child(1){
+    width: 10%;
+}
+
+#taskTable td:nth-child(3){
+    width: 16%;
+}
+
+#taskTable td:nth-child(4){
+    width: 12%;
+}
+
+#taskTable td:nth-child(5){
+    width: 25%;
+}
+

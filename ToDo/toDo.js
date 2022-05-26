@@ -3,12 +3,27 @@ let popCloseButton = document.querySelector('#popupExit');
 let viewTaskButton = document.querySelector('#viewTask');
 let saveTaskToDatabase = document.querySelector('#popupSubmit')
 let wrapper = document.querySelector('#wrapper');
-let taskOutput = document.querySelector('#listItem');
+let taskOutput = document.querySelector('#taskTable tbody');
 const loggedInUserEmail = sessionStorage.getItem("loggedInUserEmail");
 
 const taskGetUrl = 'https://testapi.io/api/wehevov449/resource/toDoApp';
 const taskPostUrl = 'https://testapi.io/api/wehevov449/resource/toDoApp';
+const usersGetUrl = 'https://testapi.io/api/wehevov449/resource/toDoAppUsers'
 
+displayUserName();
+
+function displayUserName(){
+    fetch(usersGetUrl)
+    .then(res => {return res.json()})
+    .then(data => {
+        let loggedInUser = data.data.filter(isLoggedInUser)[0];
+        document.getElementById("helloText").innerText = `Hello ${loggedInUser.firstName}`;
+    });
+}
+
+function isLoggedInUser(userToCheck){
+    return (userToCheck.email === loggedInUserEmail);
+}
 
 createTaskButton.addEventListener('click',()=>{
     document.querySelector('#popup').style.display = "flex";
@@ -28,26 +43,10 @@ viewTaskButton.addEventListener('click',()=>{
         let loggedInUserTasks = data.data.filter(isCurrentUserOwner);
         loggedInUserTasks.forEach(element => {
         if(element.status ==='false'){
-            let listItem = document.querySelector('#listItem');
-            let taskOutput = document.querySelector('#taskOutput');
-            let li = document.createElement('li');
-            li.setAttribute('id',element.id);
-            let editButton = document.createElement('button')
-            editButton.textContent ='EDIT'
-            let doneButton = document.createElement('button')
-            doneButton.textContent = 'DONE'
-                doneButton.addEventListener('click',(event)=>{
-                    const id = event.target.parentElement.id;
-                    const parentElement = event.target.parentElement;
-                    console.log(parentElement);
-                    setElementStatusTrue(id,parentElement);
-                });
-            li.textContent = `Id : ${element.id}. Task type : ${element.type}. ${element.content}. End date : ${element.endDate}. Status : ${element.status}`;
-            li.append(editButton,doneButton)
-            listItem.append(li);
-            taskOutput.append(listItem)
-            wrapper.append(taskOutput);
-            taskOutput.style.display = 'flex';
+            let taskTableBody = document.querySelector('#taskTable tbody');
+            let tr = createRow(element);
+            tr.setAttribute('id',element.id);
+            taskTableBody.append(tr)
         }
         
         });
@@ -56,6 +55,41 @@ viewTaskButton.addEventListener('click',()=>{
         console.log(err);
     });
 })
+
+function createRow(task){
+    let tr = document.createElement('tr');
+    let simplifiedTask = {
+        type: task.type,
+        content: task.content,
+        endDate: task.endDate,
+        status: task.status
+    }
+
+    for (let key in simplifiedTask){
+        let td = document.createElement('td');
+        td.innerText = simplifiedTask[key];
+        tr.append(td);
+    }
+
+    let editButton = document.createElement('button')
+    editButton.textContent ='EDIT'
+
+    let doneButton = document.createElement('button')
+    doneButton.textContent = 'DONE'
+    doneButton.addEventListener('click',(event)=>{
+        const id = event.target.parentElement.id;
+        const parentElement = event.target.parentElement;
+        console.log(parentElement);
+        setElementStatusTrue(id,parentElement);
+    });
+
+    let actionsTd = document.createElement('td');
+    actionsTd.append(editButton);
+    actionsTd.append(doneButton);
+    tr.append(actionsTd);
+
+    return tr;
+}
 
 saveTaskToDatabase.addEventListener('click',()=>{
         fetch(taskPostUrl,{
