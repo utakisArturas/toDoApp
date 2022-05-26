@@ -13,6 +13,11 @@ function clearInputs(){
 }
 
 function register(){
+    if (!isEmailValid(emailInput.value)){
+        alert("Invalid email!");
+        return false;
+    }
+
     let formData = {
         email: emailInput.value,
         firstName: firstNameInput.value,
@@ -34,4 +39,9 @@ function register(){
             alert("API error.")
         }
     })
+}
+
+function isEmailValid(email){
+    let validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return email.match(validEmailRegex);
 }
