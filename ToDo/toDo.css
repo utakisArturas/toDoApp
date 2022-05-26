@@ -34,8 +34,9 @@ body{
     -webkit-user-select: none;
     touch-action: manipulation;
     
+    
 }
-#viewTask{
+#viewTask, #viewTaskDone{
     margin-left: 15px;
 }
 
