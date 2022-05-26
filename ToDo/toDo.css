@@ -32,7 +32,11 @@ body{
     text-decoration: none;
     user-select: none;
     -webkit-user-select: none;
-    touch-action: manipulation; 
+    touch-action: manipulation;
+    
+}
+#viewTask{
+    margin-left: 15px;
 }
 
 #wrapper button:hover {

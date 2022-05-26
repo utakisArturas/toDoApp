@@ -32,10 +32,18 @@ createTaskButton.addEventListener('click',()=>{
 
 exitBtn.addEventListener('click',()=>{
     document.querySelector('#popup2').style.display = 'none';
+    document.querySelector('#type2').value = '';
+    document.querySelector('#content2').value = '';
+    document.querySelector('#endDate2').value;
+
  });
 
 popCloseButton.addEventListener('click',()=>{
     document.querySelector('#popup').style.display = "none";
+    document.querySelector('#type').value = '';
+    document.querySelector('#content').value = '';
+    document.querySelector('#endDate').value;
+
 });
 
 viewTaskButton.addEventListener('click',()=>{
