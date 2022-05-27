@@ -1,16 +1,19 @@
 let createTaskButton = document.querySelector('#createTask');
 let popCloseButton = document.querySelector('#popupExit');
-let viewTaskButton = document.querySelector('#viewTask');
+let viewPendingTasksButton = document.querySelector('#viewPendingTasks');
+let viewDoneTasksButton = document.querySelector('#viewDoneTasks');
 let wrapper = document.querySelector('#wrapper');
 let taskOutput = document.querySelector('#taskTable tbody');
 const loggedInUserEmail = sessionStorage.getItem("loggedInUserEmail");
+
+let currentlyShowingTasks = "Pending";
 
 const taskGetUrl = 'https://testapi.io/api/wehevov449/resource/toDoApp';
 const taskPostUrl = 'https://testapi.io/api/wehevov449/resource/toDoApp';
 const usersGetUrl = 'https://testapi.io/api/wehevov449/resource/toDoAppUsers';
 
 displayUserName();
-showPendingTasks();
+renderTasks(currentlyShowingTasks);
 
 function displayUserName(){
     fetch(usersGetUrl)
@@ -37,7 +40,7 @@ createTaskButton.addEventListener('click',()=>{
             content : document.querySelector('#content').value,
             owner : loggedInUserEmail,
             endDate : document.querySelector('#endDate').value,
-            status : 'false'
+            status : 'Pending'
             })
             
         })
@@ -49,12 +52,11 @@ popCloseButton.addEventListener('click',()=>{
     document.querySelector('#type').value = '';
     document.querySelector('#content').value = '';
     document.querySelector('#endDate').value;
-
+    renderTasks(currentlyShowingTasks);
 });
 
-viewTaskButton.addEventListener('click', showPendingTasks)
-
-function showPendingTasks(){
+function renderTasks(type){
+    currentlyShowingTasks = type;
     fetch(taskGetUrl)
     .then(res =>{
         return res.json()
@@ -63,7 +65,7 @@ function showPendingTasks(){
         clearTaskView();
         let loggedInUserTasks = data.data.filter(isCurrentUserOwner);
         loggedInUserTasks.forEach(element => {
-        if(element.status ==='false'){
+        if(element.status === type){
             let taskTableBody = document.querySelector('#taskTable tbody');
             let tr = createRow(element);
             tr.setAttribute('id',element.id);
@@ -93,7 +95,7 @@ function createRow(task){
     }
 
     let editButton = document.createElement('button')
-    editButton.textContent ='EDIT'
+    editButton.textContent = 'EDIT';
     editButton.addEventListener('click',(event)=>{
         const row = event.target.parentElement.parentElement;
 
@@ -108,7 +110,7 @@ function createRow(task){
     });
 
     let doneButton = document.createElement('button')
-    doneButton.textContent = 'DONE'
+    doneButton.textContent = (task.status === 'Pending') ? 'Done' : 'Pending'
     doneButton.addEventListener('click',(event)=>{
         const id = event.target.parentElement.parentElement.id;
         const parentElement = event.target.parentElement.parentElement;
@@ -167,7 +169,7 @@ function updateTask(id){
         content : document.querySelector('#content').value,
         owner : loggedInUserEmail,
         endDate : document.querySelector('#endDate').value,
-        status : 'false'
+        status : currentlyShowingTasks
     };
     fetch(`https://testapi.io/api/wehevov449/resource/toDoApp/${id}`,{
     method: 'PUT',

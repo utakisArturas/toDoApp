@@ -14,9 +14,10 @@
             <h1 id="helloText">Hello </h1>
         </div>
         <div id="buttons">
-            <button type="button" id="createTask">Create task</button>
-            <button type="button" id="viewTask">View tasks</button>
-            <button type="button" id="logoff" onclick="logout()">Log out</button>
+            <button type="button" id="createTask" class="top-button">Create task</button>
+            <button type="button" id="viewPendingTasks" class="top-button" onclick="renderTasks('Pending')">Pending tasks</button>
+            <button type="button" id="viewDoneTasks" class="top-button" onclick="renderTasks('Done')">Done tasks</button>
+            <button type="button" id="logoff" class="top-button" onclick="logout()">Log out</button>
         </div>
         <div id="taskOutput">
             <table id="taskTable">
