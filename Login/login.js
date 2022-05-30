@@ -10,7 +10,7 @@ loginForm.addEventListener("click", () =>{
 });
 
 if (sessionStorage.getItem("loggedInUserEmail") != null){
-    window.location.href = "../ToDo/ToDo.html";
+    window.location.href = "../ToDo/toDo.html";
 }
 
 function login(){

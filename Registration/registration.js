@@ -3,7 +3,7 @@ const firstNameInput = document.getElementById("nameInput");
 const lastNameInput = document.getElementById("lastNameInput");
 
 if (sessionStorage.getItem("loggedInUserEmail") != null){
-    window.location.href = "../ToDo/ToDo.html";
+    window.location.href = "../toDo/ToDo.html";
 }
 
 function clearInputs(){
