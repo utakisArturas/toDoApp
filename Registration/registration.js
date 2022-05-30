@@ -3,7 +3,7 @@ const firstNameInput = document.getElementById("nameInput");
 const lastNameInput = document.getElementById("lastNameInput");
 
 if (sessionStorage.getItem("loggedInUserEmail") != null){
-    window.location.href = "./ToDo/ToDo.html";
+    window.location.href = "../ToDo/ToDo.html";
 }
 
 function clearInputs(){
@@ -32,7 +32,7 @@ function register(){
     .then(function(result){
         if (result.ok === true){
             alert("User created.");
-            window.location.href = "./Login/login.html";
+            window.location.href = "../Login/login.html";
         }
         else{
             clearInputs();
