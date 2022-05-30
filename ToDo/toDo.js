@@ -1,18 +1,19 @@
 let createTaskButton = document.querySelector('#createTask');
 let popCloseButton = document.querySelector('#popupExit');
-let viewTaskButton = document.querySelector('#viewTask');
-let viewTaskDone = document.querySelector('#viewTaskDone');
-let saveTaskToDatabase = document.querySelector('#popupSubmit')
+let viewPendingTasksButton = document.querySelector('#viewPendingTasks');
+let viewDoneTasksButton = document.querySelector('#viewDoneTasks');
 let wrapper = document.querySelector('#wrapper');
 let taskOutput = document.querySelector('#taskTable tbody');
-let exitBtn = document.querySelector('#popupExit2');
 const loggedInUserEmail = sessionStorage.getItem("loggedInUserEmail");
+
+let currentlyShowingTasks = "Pending";
 
 const taskGetUrl = 'https://testapi.io/api/wehevov449/resource/toDoApp';
 const taskPostUrl = 'https://testapi.io/api/wehevov449/resource/toDoApp';
 const usersGetUrl = 'https://testapi.io/api/wehevov449/resource/toDoAppUsers';
 
 displayUserName();
+renderTasks(currentlyShowingTasks);
 
 function displayUserName(){
     fetch(usersGetUrl)
@@ -28,26 +29,34 @@ function isLoggedInUser(userToCheck){
 }
 
 createTaskButton.addEventListener('click',()=>{
-    document.querySelector('#popup').style.display = "flex";
+    showPopup("SAVE", ()=>{
+        fetch(taskPostUrl,{
+            method:'POST',
+            headers: {
+                'Content-type' : 'application/json'
+            },
+            body: JSON.stringify({
+            type : document.querySelector('#type').value,
+            content : document.querySelector('#content').value,
+            owner : loggedInUserEmail,
+            endDate : document.querySelector('#endDate').value,
+            status : 'Pending'
+            })
+            
+        })
+    })
 })
-
-exitBtn.addEventListener('click',()=>{
-    document.querySelector('#popup2').style.display = 'none';
-    document.querySelector('#type2').value = '';
-    document.querySelector('#content2').value = '';
-    document.querySelector('#endDate2').value = '';
-
- });
 
 popCloseButton.addEventListener('click',()=>{
     document.querySelector('#popup').style.display = "none";
     document.querySelector('#type').value = '';
     document.querySelector('#content').value = '';
     document.querySelector('#endDate').value;
-
+    renderTasks(currentlyShowingTasks);
 });
 
-viewTaskButton.addEventListener('click',()=>{
+function renderTasks(type){
+    currentlyShowingTasks = type;
     fetch(taskGetUrl)
     .then(res =>{
         return res.json()
@@ -56,7 +65,7 @@ viewTaskButton.addEventListener('click',()=>{
         clearTaskView();
         let loggedInUserTasks = data.data.filter(isCurrentUserOwner);
         loggedInUserTasks.forEach(element => {
-        if(element.status ==='Pending'){
+        if(element.status === type){
             let taskTableBody = document.querySelector('#taskTable tbody');
             let tr = createRow(element);
             tr.setAttribute('id',element.id);
@@ -68,7 +77,7 @@ viewTaskButton.addEventListener('click',()=>{
     .catch((err) => {
         console.log(err);
     });
-})
+}
 
 function createRow(task){
     let tr = document.createElement('tr');
@@ -86,23 +95,27 @@ function createRow(task){
     }
 
     let editButton = document.createElement('button')
-    editButton.textContent ='EDIT'
+    editButton.textContent = 'EDIT';
     editButton.addEventListener('click',(event)=>{
-        const id = event.target.parentElement.parentElement.id;
-        document.querySelector('#popup2').style.display = 'flex';
-        let updateBtn = document.querySelector('#popupEdit');
-        updateBtn.addEventListener('click',()=>{
-            updateTask(id);
-        });
+        const row = event.target.parentElement.parentElement;
+
+        document.getElementById("type").value = row.childNodes[0].innerText;
+        document.getElementById("content").value = row.childNodes[1].innerText;
+        document.getElementById("endDate").value = row.childNodes[2].innerText;
+
+        showPopup("UPDATE", ()=>{
+            updateTask(row.id);
+        })
+        
     });
 
     let doneButton = document.createElement('button')
-    doneButton.textContent = 'DONE'
+    doneButton.textContent = (task.status === 'Pending') ? 'Done' : 'Pending'
     doneButton.addEventListener('click',(event)=>{
         const id = event.target.parentElement.parentElement.id;
         const parentElement = event.target.parentElement.parentElement;
         console.log(id,parentElement);
-        setElementStatusTrue(id,parentElement);
+        toggleTaskStatus(id,parentElement);
     });
 
     let actionsTd = document.createElement('td');
@@ -113,23 +126,6 @@ function createRow(task){
     return tr;
 }
 
-saveTaskToDatabase.addEventListener('click',()=>{
-        fetch(taskPostUrl,{
-            method:'POST',
-            headers: {
-                'Content-type' : 'application/json'
-            },
-            body: JSON.stringify({
-            type : document.querySelector('#type').value,
-            content : document.querySelector('#content').value,
-            owner : loggedInUserEmail,
-            endDate : document.querySelector('#endDate').value,
-            status : 'Pending'
-            })
-            
-        })
-})
-
 function logout(){
     sessionStorage.removeItem("loggedInUserEmail");
     window.location.href = "/index.html"
@@ -139,23 +135,24 @@ function isCurrentUserOwner(task){
     return (task.owner === sessionStorage.getItem("loggedInUserEmail"));
 }
 
-function setElementStatusTrue(id,element){
+function toggleTaskStatus(id,element){
     fetch(`https://testapi.io/api/wehevov449/resource/toDoApp/${id}`)
     .then(res =>{
         return res.json()
     })
     .then(data=>{
+        let newStatus = (data.status == "Done") ? "Pending" : "Done";
         let type = data.type;
         let content = data.content;
         let owner = sessionStorage.getItem("loggedInUserEmail");
         let endDate = data.endDate;
-        let status = 'Finished';
+        let status = newStatus;
         fetch(`https://testapi.io/api/wehevov449/resource/toDoApp/${id}`,{
-        method: 'PUT',
-        headers:{
-        'Content-Type':'application/json'
-        },
-        body: JSON.stringify({type : type,content : content,owner: owner,endDate : endDate,status: status}) 
+            method: 'PUT',
+            headers:{
+            'Content-Type':'application/json'
+            },
+            body: JSON.stringify({type : type,content : content,owner: owner,endDate : endDate,status: status}) 
         })
         console.log(data);
     });
@@ -168,11 +165,11 @@ function clearTaskView(){
 
 function updateTask(id){
     let update ={
-        type : document.querySelector('#type2').value,
-        content : document.querySelector('#content2').value,
+        type : document.querySelector('#type').value,
+        content : document.querySelector('#content').value,
         owner : loggedInUserEmail,
-        endDate : document.querySelector('#endDate2').value,
-        status : 'Pending'
+        endDate : document.querySelector('#endDate').value,
+        status : currentlyShowingTasks
     };
     fetch(`https://testapi.io/api/wehevov449/resource/toDoApp/${id}`,{
     method: 'PUT',
@@ -184,27 +181,11 @@ function updateTask(id){
 
 };
 
-viewTaskDone.addEventListener('click',()=>{
-    fetch(taskGetUrl)
-    .then(res =>{
-        return res.json()
-    })
-    .then(data =>{
-        clearTaskView();
-        let loggedInUserTasks = data.data.filter(isCurrentUserOwner);
-        loggedInUserTasks.forEach(element => {
-        if(element.status ==='Finished'){
-            let taskTableBody = document.querySelector('#taskTable tbody');
-            let tr = createRow(element);
-            tr.setAttribute('id',element.id);
-            taskTableBody.append(tr)
-        }
-        
-        });
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-})
+function showPopup(actionButtonText, actionButtonFunction){
+    document.querySelector('#popup').style.display = "flex";
 
+    let actionButton = document.getElementById("popupAction");
 
+    actionButton.innerText = actionButtonText;
+    actionButton.onclick = actionButtonFunction;
+}
