@@ -128,7 +128,7 @@ function createRow(task){
 
 function logout(){
     sessionStorage.removeItem("loggedInUserEmail");
-    window.location.href = "/index.html"
+    window.location.href = "../index.html"
 }
 
 function isCurrentUserOwner(task){
